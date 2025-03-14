@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
-import { Settings, Users, Building, Shield, Database, Globe, Moon, Sun, Laptop } from "lucide-react"
+import { Settings, Users, Building, Shield, Database, Globe, Moon, Sun, Laptop, Plus } from "lucide-react"
 
 export default function SettingsPage() {
   const [theme, setTheme] = useState("system")
