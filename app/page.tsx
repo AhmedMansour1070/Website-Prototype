@@ -3,18 +3,18 @@ import { ServicesSection } from "@/components/sections/services-section"
 import { OfferingsSection } from "@/components/sections/offerings-section"
 import { IndustriesSection } from "@/components/sections/industries-section"
 import { NewsletterSection } from "@/components/sections/newsletter-section"
-import { PartnersMarquee } from "@/components/sections/partners-marquee"
+
+// import { PartnersMarquee } from "@/components/sections/partners-marquee"
 
 export default function Home() {
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="bg-white">
       <HeroSection />
       <ServicesSection />
       <OfferingsSection />
       <IndustriesSection />
-      <PartnersMarquee />
+      {/* <PartnersMarquee /> */}
       <NewsletterSection />
     </div>
   )
 }
-

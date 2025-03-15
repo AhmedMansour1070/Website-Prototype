@@ -1,8 +1,0 @@
-This directory contains placeholder images for vehicles:
-
-- vw-polo.jpg: Volkswagen Polo Life
-- vw-passat.jpg: Volkswagen Passat Variant
-- bmw-2er.jpg: BMW 2er Active Tourer
-- bmw-3er.jpg: BMW 3er Touring M
-- bmw-x2.jpg: BMW X2 M
-

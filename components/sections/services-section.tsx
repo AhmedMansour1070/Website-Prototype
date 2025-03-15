@@ -63,7 +63,7 @@ export function ServicesSection() {
   }
 
   return (
-    <section className="relative -mt-32 pb-20">
+    <section className="relative -mt-32 pb-20 bg-transparent">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-8">
           {services.map((service, index) => (
@@ -73,16 +73,22 @@ export function ServicesSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
-              <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
-                <div className="relative h-48">
-                  <Image src={service.image || "/placeholder.svg"} alt={service.title} fill className="object-cover" />
+              <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 bg-white border border-gray-300">
+                {/* Added border-b to the image container */}
+                <div className="relative h-48 overflow-hidden border-b border-gray-300">
+                  <Image
+                    src={service.image || "/placeholder.svg"}
+                    alt={service.title}
+                    fill
+                    className="object-cover scale-105 transition-transform duration-500 group-hover:scale-110"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white font-bold text-xl">{service.title}</h3>
                   </div>
                 </div>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-black">
                     <service.icon className="h-5 w-5 text-blue-600" />
                     {service.title}
                   </CardTitle>
@@ -95,7 +101,11 @@ export function ServicesSection() {
                     onClick={() => toggleService(index)}
                   >
                     <span>{activeService === index ? "SHOW LESS" : "LEARN MORE"}</span>
-                    {activeService === index ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    {activeService === index ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
                   </Button>
 
                   <AnimatePresence>
@@ -109,19 +119,15 @@ export function ServicesSection() {
                       >
                         <div className="pt-4 space-y-2">
                           <h4 className="font-semibold text-blue-700">Our Services Include:</h4>
-                          <ul className="space-y-2">
+                          <ul className="space-y-2 list-disc pl-5 text-gray-600">
                             {service.details.map((detail, i) => (
                               <motion.li
                                 key={i}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.2, delay: i * 0.1 }}
-                                className="flex items-start"
                               >
-                                <span className="inline-block h-5 w-5 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 mr-2 text-center">
-                                  •
-                                </span>
-                                <span>{detail}</span>
+                                {detail}
                               </motion.li>
                             ))}
                           </ul>
@@ -138,4 +144,3 @@ export function ServicesSection() {
     </section>
   )
 }
-
