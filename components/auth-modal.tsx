@@ -6,7 +6,8 @@ import { Button, type ButtonProps } from "@/components/ui/button"
 import { AuthForm } from "@/components/auth-form"
 import { useRouter } from "next/navigation"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { User } from "lucide-react"
+import { User, LogIn } from "lucide-react"
+import { motion } from "framer-motion"
 
 interface AuthModalProps {
   triggerVariant?: ButtonProps["variant"]
@@ -30,23 +31,43 @@ export function AuthModal({
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         {useAvatar ? (
-          <Avatar className={`cursor-pointer h-10 w-10 bg-blue-100 hover:bg-blue-200 transition-colors ${className}`}>
-            <AvatarFallback className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
-              <User className="h-5 w-5" />
-            </AvatarFallback>
-          </Avatar>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Avatar 
+              className={`cursor-pointer h-10 w-10 ring-2 ring-white/20 hover:ring-yellow-400/70 transition-all ${className}`}
+            >
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                <User className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+          </motion.div>
         ) : (
-          <Button variant={triggerVariant} className={className}>
-            {triggerText}
-          </Button>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button 
+              variant={triggerVariant} 
+              className={`flex items-center gap-2 ${className}`}
+            >
+              <LogIn className="h-4 w-4" />
+              {triggerText}
+            </Button>
+          </motion.div>
         )}
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Authentication</SheetTitle>
-          <SheetDescription>Login or create an account to access the dashboard.</SheetDescription>
+      <SheetContent className="sm:max-w-md">
+        <SheetHeader className="space-y-2 mb-6">
+          <SheetTitle className="text-2xl font-bold text-blue-600">
+            Welcome Back
+          </SheetTitle>
+          <SheetDescription className="text-gray-600">
+            Login or create an account to access the fleet management dashboard
+          </SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <div className="py-4 overflow-y-auto max-h-[calc(100vh-12rem)]">
           <AuthForm
             defaultTab={defaultTab}
             onSuccess={(userData) => {
@@ -55,8 +76,13 @@ export function AuthModal({
             }}
           />
         </div>
+        <div className="absolute bottom-4 left-6 right-6">
+          <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+            Secured by TruckTrust™ Technology
+          </div>
+        </div>
       </SheetContent>
     </Sheet>
   )
 }
-

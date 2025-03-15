@@ -13,27 +13,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Truck, Menu } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Truck, Menu, User, LogOut, LayoutDashboard, Settings, ChevronRight, Phone, Mail, Info, Home } from "lucide-react"
 import { AuthModal } from "./auth-modal"
 
-// Update the navItems array to remove NEWS, MEDIA, and LOCATIONS
 const navItems = [
-  { label: "HOME", href: "/" },
-  { label: "ABOUT", href: "/about" },
-  { label: "SERVICES", href: "/services" },
-  { label: "CONTACT", href: "/contact" },
+  { label: "HOME", href: "/", icon: <Home className="h-4 w-4" /> },
+  { label: "ABOUT", href: "/about", icon: <Info className="h-4 w-4" /> },
+  { label: "SERVICES", href: "/services", icon: <Truck className="h-4 w-4" /> },
+  { label: "CONTACT", href: "/contact", icon: <Mail className="h-4 w-4" /> },
 ]
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0)
+      setIsScrolled(window.scrollY > 20)
     }
 
     const token = localStorage.getItem("token")
@@ -44,8 +46,20 @@ export default function Navbar() {
       setUser(JSON.parse(userData))
     }
 
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768)
+    }
+
+    // Initialize
+    handleResize()
+
     window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener("resize", handleResize)
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("resize", handleResize)
+    }
   }, [])
 
   const handleLogout = () => {
@@ -56,30 +70,43 @@ export default function Navbar() {
     router.push("/")
   }
 
-  return (
+  // Desktop Navbar Component
+  const DesktopNavbar = () => (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-md" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 ${
+        isScrolled 
+          ? "bg-white/95 backdrop-blur-sm shadow-lg py-2" 
+          : "bg-gradient-to-b from-black/50 to-transparent py-4"
       }`}
     >
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center space-x-2 min-w-[160px]">
-            <Truck className={`h-8 w-8 ${isScrolled ? "text-blue-600" : "text-white"}`} />
-            <span className={`text-2xl font-bold ${isScrolled ? "text-gray-900" : "text-white"}`}>TRUCKING</span>
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-3 min-w-[160px] group">
+            <div className={`p-2 rounded-lg ${
+              isScrolled ? "bg-blue-100/80" : "bg-white/10"
+            }`}>
+              <Truck className={`h-7 w-7 ${
+                isScrolled ? "text-blue-600" : "text-white group-hover:text-yellow-400"
+              }`} />
+            </div>
+            <span className={`text-2xl font-bold tracking-tight ${
+              isScrolled ? "text-gray-900" : "text-white group-hover:text-yellow-400"
+            }`}>TRUCKING</span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-8 min-w-[400px] justify-center">
+          <nav className="hidden md:flex items-center space-x-1 min-w-[400px] justify-center">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled
-                    ? pathname === item.href
-                      ? "text-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
-                    : "text-white hover:text-yellow-500"
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  pathname === item.href
+                    ? isScrolled
+                      ? "text-blue-600 bg-blue-50/80"
+                      : "text-yellow-400 bg-white/10"
+                    : isScrolled
+                      ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50/80"
+                      : "text-white/90 hover:text-yellow-400 hover:bg-white/10"
                 }`}
               >
                 {item.label}
@@ -91,14 +118,21 @@ export default function Navbar() {
             {isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
+                  <Button 
+                    variant="ghost" 
+                    className={`relative rounded-full p-0 h-10 w-10 border-2 ${
+                      isScrolled ? "border-blue-600" : "border-yellow-400"
+                    }`}
+                  >
+                    <Avatar className="h-full w-full">
                       <AvatarImage src="/images/avatar-1.jpg" alt={user?.name || "User"} />
-                      <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+                      <AvatarFallback className={isScrolled ? "bg-blue-100 text-blue-600" : "bg-yellow-400/20 text-white"}>
+                        {user?.name?.charAt(0) || "U"}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-56 mt-1" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{user?.name}</p>
@@ -107,25 +141,172 @@ export default function Navbar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard" className="flex items-center">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile">Profile</Link>
+                    <Link href="/dashboard/profile" className="flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="flex items-center text-red-500 focus:text-red-500">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <AuthModal useAvatar={true} />
             )}
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
+            
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={`md:hidden ${
+                    isScrolled ? "text-blue-600 hover:bg-blue-50" : "text-white hover:bg-white/10"
+                  }`}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[80%] sm:w-[350px] p-0">
+                <div className="flex flex-col h-full">
+                  <div className="p-6 border-b">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 rounded-lg bg-blue-100">
+                        <Truck className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <span className="text-xl font-bold text-gray-900">TRUCKING</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 overflow-auto py-2">
+                    <nav className="flex flex-col">
+                      {navItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`flex items-center justify-between px-6 py-4 border-b border-gray-100 ${
+                            pathname === item.href
+                              ? "bg-blue-50 text-blue-600"
+                              : "text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <span className="font-medium">{item.label}</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                  
+                  <div className="p-6 border-t mt-auto">
+                    {isLoggedIn ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-10 w-10 border-2 border-blue-600">
+                            <AvatarImage src="/images/avatar-1.jpg" alt={user?.name || "User"} />
+                            <AvatarFallback className="bg-blue-100 text-blue-600">
+                              {user?.name?.charAt(0) || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-sm font-medium">{user?.name}</p>
+                            <p className="text-xs text-gray-500">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => {
+                              router.push('/dashboard');
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full"
+                          >
+                            Dashboard
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            onClick={() => {
+                              handleLogout();
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full"
+                          >
+                            Log out
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Button 
+                          className="w-full"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Sign in
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Create account
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
     </header>
   )
-}
 
+  // Mobile Bottom Navbar Component
+  const MobileBottomNavbar = () => (
+    <div
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t shadow-lg`}
+    >
+      <div className="grid grid-cols-4 h-16">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex flex-col items-center justify-center space-y-1 ${
+              pathname === item.href
+                ? "text-blue-600"
+                : "text-gray-600 hover:text-blue-600"
+            }`}
+          >
+            <div className={`p-1 rounded-md ${pathname === item.href ? "bg-blue-100" : ""}`}>
+              {item.icon}
+            </div>
+            <span className="text-xs font-medium">{item.label}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      {/* Always render desktop navbar for larger screens */}
+      <DesktopNavbar />
+      
+      {/* Render mobile bottom navbar only on mobile view */}
+      {isMobileView && <MobileBottomNavbar />}
+      
+      {/* Add padding to bottom of page when mobile navbar is visible */}
+      {isMobileView && <div className="h-16" />}
+    </>
+  )
+}
