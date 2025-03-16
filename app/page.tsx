@@ -81,7 +81,7 @@ export default function Home() {
         {showScrollButton && (
           <motion.button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 p-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg z-50 transition-colors duration-300"
+            className="fixed bottom-24 sm:bottom-16 right-8 p-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg z-50 transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
