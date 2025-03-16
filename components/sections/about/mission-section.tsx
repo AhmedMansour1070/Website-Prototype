@@ -9,14 +9,18 @@ export function MissionSection() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: 0.15
       }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0, y: 15 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
   }
 
   const valuesVariants = {
@@ -25,8 +29,8 @@ export function MissionSection() {
       opacity: 1,
       scale: 1,
       transition: { 
-        delay: i * 0.2,
-        duration: 0.5,
+        delay: i * 0.15,
+        duration: 0.4,
         type: "spring",
         stiffness: 100
       }
@@ -43,37 +47,37 @@ export function MissionSection() {
       variants={containerVariants}
     >
       <motion.div 
-        className="bg-gradient-to-r from-white to-blue-50 p-8 rounded-xl shadow-sm border border-blue-100 relative overflow-hidden"
+        className="bg-gradient-to-r from-white to-blue-50 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-blue-100 relative overflow-hidden"
         variants={itemVariants}
       >
         {/* Background decoration */}
         <motion.div 
-          className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-blue-100 opacity-40 blur-2xl"
+          className="absolute -top-16 -right-16 w-24 md:w-40 h-24 md:h-40 rounded-full bg-blue-100 opacity-40 blur-2xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.4, 0.2, 0.4]
           }}
-          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         />
         
         <motion.div 
-          className="flex items-center mb-6"
+          className="flex items-center mb-4 sm:mb-6"
           variants={itemVariants}
         >
           <motion.div 
             className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-sm"
-            whileHover={{ scale: 1.1, rotate: 10 }}
+            whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Target className="h-6 w-6 text-white" />
+            <Target className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </motion.div>
-          <h2 className="text-2xl font-semibold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent ml-3">
+          <h2 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent ml-3">
             Our Mission
           </h2>
         </motion.div>
         
         <motion.p 
-          className="mb-6 text-gray-700 leading-relaxed"
+          className="mb-6 text-gray-700 leading-relaxed text-sm sm:text-base"
           variants={itemVariants}
         >
           Our mission is to empower fleet managers with the tools and insights they need to make data-driven decisions,
@@ -82,23 +86,23 @@ export function MissionSection() {
         </motion.p>
         
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8"
           variants={itemVariants}
         >
           {['Innovation', 'Reliability', 'Excellence'].map((value, index) => (
             <motion.div 
               key={index} 
-              className="bg-white p-4 rounded-lg shadow-sm text-center border border-gray-100"
+              className="bg-white p-3 sm:p-4 rounded-lg shadow-sm text-center border border-gray-100"
               custom={index}
               variants={valuesVariants}
               whileHover={{ 
-                y: -5, 
+                y: -3, 
                 boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                 backgroundColor: index === 0 ? "#EFF6FF" : index === 1 ? "#F0F9FF" : "#F5F3FF"
               }}
             >
               <motion.span 
-                className="font-medium text-blue-700"
+                className="font-medium text-blue-700 text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
               >
                 {value}

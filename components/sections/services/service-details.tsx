@@ -25,7 +25,7 @@ const services = [
     title: "Fleet Management",
     description: "Comprehensive vehicle tracking and management system",
     icon: Truck,
-    image: "/images/fleet-management.jpg",
+    image: "/images/fleet-m1.jpg",
     features: [
       "Real-time vehicle tracking and location monitoring",
       "Vehicle utilization and performance analytics",

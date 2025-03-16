@@ -6,7 +6,6 @@ import { AboutHeroSection } from "@/components/sections/about/about-hero-section
 import { MissionSection } from "@/components/sections/about/mission-section"
 import { FeaturesSection } from "@/components/sections/about/features-section"
 import { TeamSection } from "@/components/sections/about/team-section"
-import { ArrowUp } from "lucide-react"
 
 // Animated background elements
 const BackgroundElements = () => {
@@ -108,10 +107,10 @@ interface AnimatedSectionProps {
 const AnimatedSection = ({ children, delay = 0 }: AnimatedSectionProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: "easeOut", delay }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: "easeOut", delay }}
     >
       {children}
     </motion.div>
@@ -121,26 +120,11 @@ const AnimatedSection = ({ children, delay = 0 }: AnimatedSectionProps) => {
 export default function AboutPage() {
   // State for client-side only components
   const [isClient, setIsClient] = useState(false)
-  const [showScrollButton, setShowScrollButton] = useState(false)
 
   useEffect(() => {
     // Mark that we're on the client
     setIsClient(true)
-
-    const handleScroll = () => {
-      setShowScrollButton(window.scrollY > 400)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    })
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-blue-50 to-indigo-50 relative overflow-hidden">
@@ -151,50 +135,31 @@ export default function AboutPage() {
       {isClient && <ScrollIndicator />}
       
       {/* Main content */}
-      <div className="pt-24 pb-16 relative z-10">
-        <div className="container mx-auto px-4">
+      <div className="pt-16 md:pt-24 pb-16 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6">
           <AnimatedSection>
             <AboutHeroSection />
           </AnimatedSection>
           
-          <AnimatedSection delay={0.2}>
-            <div className="mt-16">
+          <AnimatedSection delay={0.15}>
+            <div className="mt-12 md:mt-16">
               <MissionSection />
             </div>
           </AnimatedSection>
           
-          <AnimatedSection delay={0.4}>
-            <div className="mt-16">
+          <AnimatedSection delay={0.3}>
+            <div className="mt-12 md:mt-16">
               <FeaturesSection />
             </div>
           </AnimatedSection>
           
-          <AnimatedSection delay={0.6}>
-            <div className="mt-16 mb-16">
+          <AnimatedSection delay={0.45}>
+            <div className="mt-12 md:mt-16 mb-12 md:mb-16">
               <TeamSection />
             </div>
           </AnimatedSection>
         </div>
       </div>
-      
-      {/* Scroll to top button - only render on client */}
-      {isClient && (
-        <AnimatePresence>
-          {showScrollButton && (
-            <motion.button
-              onClick={scrollToTop}
-              className="fixed bottom-8 right-8 p-4 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg z-50"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <ArrowUp className="h-6 w-6" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-      )}
     </div>
   )
 }

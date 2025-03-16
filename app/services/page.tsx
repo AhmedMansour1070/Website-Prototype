@@ -1,5 +1,6 @@
 "use client"
 
+import { ErrorBoundary } from "@/components/errors/ErrorBoundary"
 import { ServiceDetails } from "@/components/sections/services/service-details"
 import { ServicesOverview } from "@/components/sections/services/services-overview"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
@@ -609,54 +610,8 @@ export function ServicesCTASection() {
   )
 }
 
-// Scroll To Top Button Component
-const ScrollToTopButton = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  
-  // Check scroll position to show/hide button
-  useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 500) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
-      }
-    }
-    
-    window.addEventListener("scroll", toggleVisibility)
-    return () => window.removeEventListener("scroll", toggleVisibility)
-  }, [])
-  
-  // Smooth scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    })
-  }
-  
-  return (
-    <motion.button
-      onClick={scrollToTop}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ 
-        opacity: isVisible ? 1 : 0,
-        scale: isVisible ? 1 : 0.5,
-        y: isVisible ? 0 : 20
-      }}
-      whileHover={{ scale: 1.1, backgroundColor: "#4338ca" }}
-      whileTap={{ scale: 0.9 }}
-      transition={{ duration: 0.3 }}
-      className="fixed bottom-8 right-8 z-50 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl"
-      aria-label="Scroll to top"
-    >
-      <ArrowDown className="h-6 w-6 rotate-180" />
-    </motion.button>
-  )
-}
-
-// Enhanced ServicesPage Component with complete page animations
-export default function ServicesPage() {
+// Main page content wrapped as a separate component
+function ServicesPageContent() {
   const { scrollYProgress } = useScroll()
   const backgroundColor = useTransform(
     scrollYProgress,
@@ -728,9 +683,15 @@ export default function ServicesPage() {
       
       {/* Footer spacing */}
       <div className="h-20"></div>
-      
-      {/* Add the ScrollToTopButton component */}
-      <ScrollToTopButton />
     </motion.div>
+  )
+}
+
+// Export the main page wrapped in the ErrorBoundary
+export default function ServicesPage() {
+  return (
+    <ErrorBoundary>
+      <ServicesPageContent />
+    </ErrorBoundary>
   )
 }

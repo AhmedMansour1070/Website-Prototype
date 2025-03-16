@@ -54,18 +54,19 @@ export function ContactForm() {
     })
   }
 
+  // Simplified animation variants for mobile
   const formVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.05 // Faster staggering for mobile
       }
     }
   }
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 10, opacity: 0 }, // Reduced y offset for mobile
     visible: {
       y: 0,
       opacity: 1
@@ -74,36 +75,36 @@ export function ContactForm() {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 15 }} // Reduced y offset
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4 }} // Faster animation for mobile
     >
       <Card className="bg-white shadow-lg border-none overflow-hidden">
         <div className="absolute h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 top-0"></div>
-        <CardHeader className="pb-6">
+        <CardHeader className="pb-4 md:pb-6"> {/* Reduced padding on mobile */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }} // Reduced offset
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
           >
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-700 bg-clip-text text-transparent">
+            <CardTitle className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-700 bg-clip-text text-transparent">
               Send us a message
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 md:mt-2">
               Fill out the form below and we'll get back to you as soon as possible.
             </CardDescription>
           </motion.div>
         </CardHeader>
         <CardContent>
           <motion.form 
-            className="space-y-4" 
+            className="space-y-3 md:space-y-4" // Reduced spacing on mobile
             onSubmit={handleSubmit}
             variants={formVariants}
             initial="hidden"
             animate="visible"
           >
-            <motion.div className="grid gap-4 sm:grid-cols-2" variants={itemVariants}>
-              <div className="space-y-2 relative">
+            <motion.div className="grid gap-3 sm:grid-cols-2" variants={itemVariants}>
+              <div className="space-y-1 md:space-y-2 relative"> {/* Reduced spacing */}
                 <label htmlFor="first-name" className="text-sm font-medium text-gray-700">
                   First name
                 </label>
@@ -113,12 +114,12 @@ export function ContactForm() {
                     id="first-name" 
                     placeholder="John" 
                     required 
-                    className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500"
+                    className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 h-10 md:h-12" // Increased touch target
                     onChange={handleChange}
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1 md:space-y-2"> {/* Reduced spacing */}
                 <label htmlFor="last-name" className="text-sm font-medium text-gray-700">
                   Last name
                 </label>
@@ -128,14 +129,14 @@ export function ContactForm() {
                     id="last-name" 
                     placeholder="Doe" 
                     required 
-                    className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500"
+                    className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 h-10 md:h-12" // Increased touch target
                     onChange={handleChange}
                   />
                 </div>
               </div>
             </motion.div>
 
-            <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.div className="space-y-1 md:space-y-2" variants={itemVariants}> {/* Reduced spacing */}
               <label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Email
               </label>
@@ -146,13 +147,13 @@ export function ContactForm() {
                   placeholder="john.doe@example.com" 
                   type="email" 
                   required 
-                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500"
+                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 h-10 md:h-12" // Increased touch target
                   onChange={handleChange}
                 />
               </div>
             </motion.div>
 
-            <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.div className="space-y-1 md:space-y-2" variants={itemVariants}> {/* Reduced spacing */}
               <label htmlFor="phone" className="text-sm font-medium text-gray-700">
                 Phone
               </label>
@@ -162,13 +163,13 @@ export function ContactForm() {
                   id="phone" 
                   placeholder="+1 (555) 123-4567" 
                   type="tel" 
-                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500"
+                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 h-10 md:h-12" // Increased touch target
                   onChange={handleChange}
                 />
               </div>
             </motion.div>
 
-            <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.div className="space-y-1 md:space-y-2" variants={itemVariants}> {/* Reduced spacing */}
               <label htmlFor="company" className="text-sm font-medium text-gray-700">
                 Company
               </label>
@@ -177,13 +178,13 @@ export function ContactForm() {
                 <Input 
                   id="company" 
                   placeholder="Acme Inc." 
-                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500"
+                  className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 h-10 md:h-12" // Increased touch target
                   onChange={handleChange}
                 />
               </div>
             </motion.div>
 
-            <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.div className="space-y-1 md:space-y-2" variants={itemVariants}> {/* Reduced spacing */}
               <label htmlFor="message" className="text-sm font-medium text-gray-700">
                 Message
               </label>
@@ -192,7 +193,7 @@ export function ContactForm() {
                 <Textarea 
                   id="message" 
                   placeholder="How can we help you?" 
-                  rows={5} 
+                  rows={4} // Reduced on mobile
                   required 
                   className="pl-10 bg-gray-50 focus:bg-white transition-colors duration-200 border-gray-200 focus:border-blue-500 resize-none"
                   onChange={handleChange}
@@ -203,7 +204,7 @@ export function ContactForm() {
             <motion.div variants={itemVariants}>
               <Button
                 type="submit"
-                className="w-full relative overflow-hidden group"
+                className="w-full relative overflow-hidden group h-12" // Increased height for better touch target
                 disabled={isSubmitting}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 group-hover:from-blue-700 group-hover:via-indigo-700 group-hover:to-purple-700 transition-all duration-300"></span>
