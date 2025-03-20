@@ -1,3 +1,4 @@
+// auth-form.tsx
 "use client"
 
 import { useState } from "react"
@@ -12,7 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, EyeOff, Mail, User, Building, MapPin, Lock, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
 
-// Define the form schemas
+// Use environment variable for API URL
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
+// Define form schemas
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
@@ -30,8 +34,22 @@ type LoginFormValues = z.infer<typeof loginSchema>
 type RegisterFormValues = z.infer<typeof registerSchema>
 
 interface AuthFormProps {
-  onSuccess: (userData: { name: string; email: string }) => void
+  onSuccess: (userData: { name: string; email: string; companyName?: string; companyId?: number }) => void
   defaultTab?: "login" | "register"
+}
+
+// Helper function to calculate password strength
+function calculatePasswordStrength(password: string): { label: string; color: string } {
+  let score = 0
+  if (password.length >= 6) score++
+  if (/[A-Z]/.test(password)) score++
+  if (/[a-z]/.test(password)) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^A-Za-z0-9]/.test(password)) score++
+  
+  if (score <= 2) return { label: "Weak", color: "text-red-600" }
+  if (score <= 4) return { label: "Medium", color: "text-yellow-600" }
+  return { label: "Strong", color: "text-green-600" }
 }
 
 export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
@@ -60,25 +78,32 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
     },
   })
 
+  // Watch the password field to update the strength indicator
+  const passwordValue = registerForm.watch("password")
+  const strength = calculatePasswordStrength(passwordValue || "")
+
   async function onLoginSubmit(data: LoginFormValues) {
     try {
-      // For demo purposes, we'll simulate a successful login
-      // In a real app, you would make an API call here
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        credentials: "include",
+      })
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock user data
-      const userData = {
-        name: "Demo User",
-        email: data.email,
-        companyName: "Demo Company",
-        companyId: 1,
+      const result = await response.json()
+      if (!response.ok) {
+        if (result.message === "Please verify your email before logging in.") {
+          throw new Error("Your email is not verified. Please check your inbox.")
+        }
+        throw new Error(result.message || "Login failed. Please check your credentials.")
       }
 
-      // Store token and user data
-      localStorage.setItem("token", "demo-token")
-      localStorage.setItem("user", JSON.stringify(userData))
+      localStorage.setItem("token", result.token)
+      localStorage.setItem("user", JSON.stringify(result.user))
 
       toast({
         title: "Login successful",
@@ -86,7 +111,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
         duration: 3000,
       })
 
-      onSuccess(userData)
+      onSuccess(result.user)
     } catch (error) {
       toast({
         title: "Login failed",
@@ -99,31 +124,35 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
 
   async function onRegisterSubmit(data: RegisterFormValues) {
     try {
-      // For demo purposes, we'll simulate a successful registration
-      // In a real app, you would make an API call here
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          companyName: data.companyName,
+          companyAddress: data.companyAddress,
+        }),
+        credentials: "include",
+      })
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock user data
-      const userData = {
-        name: data.name,
-        email: data.email,
-        companyName: data.companyName,
-        companyId: 1,
+      const result = await response.json()
+      if (!response.ok) {
+        throw new Error(result.message || "Registration failed. Please try again.")
       }
 
-      // Store token and user data
-      localStorage.setItem("token", "demo-token")
-      localStorage.setItem("user", JSON.stringify(userData))
+      localStorage.setItem("token", result.token)
+      localStorage.setItem("user", JSON.stringify(result.user))
 
       toast({
         title: "Registration successful",
-        description: "Your account has been created successfully!",
+        description: "Your account has been created! Check your email to verify your account.",
         duration: 3000,
       })
 
-      onSuccess(userData)
+      // You might also want to redirect to a "verify email" page at this point.
+      onSuccess(result.user)
     } catch (error) {
       toast({
         title: "Registration failed",
@@ -136,7 +165,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
 
   const formVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   }
 
   return (
@@ -150,13 +179,9 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
             Register
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="login">
-          <motion.div
-            variants={formVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={formVariants} initial="hidden" animate="visible">
             <Form {...loginForm}>
               <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                 <FormField
@@ -168,11 +193,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                          <Input 
-                            placeholder="email@example.com" 
-                            className="pl-10" 
-                            {...field} 
-                          />
+                          <Input placeholder="email@example.com" className="pl-10" {...field} />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -188,12 +209,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                       <FormControl>
                         <div className="relative">
                           <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                          <Input 
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="******" 
-                            className="pl-10" 
-                            {...field} 
-                          />
+                          <Input type={showPassword ? "text" : "password"} placeholder="******" className="pl-10" {...field} />
                           <Button
                             type="button"
                             variant="ghost"
@@ -210,19 +226,11 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                   )}
                 />
                 <div className="flex justify-end">
-                  <Button 
-                    variant="link" 
-                    className="text-xs text-blue-600 hover:text-blue-800 p-0 h-auto"
-                    type="button"
-                  >
+                  <Button variant="link" className="text-xs text-blue-600 hover:text-blue-800 p-0 h-auto" type="button">
                     Forgot Password?
                   </Button>
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-blue-600 hover:bg-blue-700" 
-                  disabled={loginForm.formState.isSubmitting}
-                >
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loginForm.formState.isSubmitting}>
                   {loginForm.formState.isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -236,13 +244,9 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
             </Form>
           </motion.div>
         </TabsContent>
-        
+
         <TabsContent value="register">
-          <motion.div
-            variants={formVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={formVariants} initial="hidden" animate="visible">
             <Form {...registerForm}>
               <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
@@ -287,12 +291,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                         <FormControl>
                           <div className="relative">
                             <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                            <Input 
-                              type={showPassword ? "text" : "password"} 
-                              placeholder="******" 
-                              className="pl-10" 
-                              {...field} 
-                            />
+                            <Input type={showPassword ? "text" : "password"} placeholder="******" className="pl-10" {...field} />
                             <Button
                               type="button"
                               variant="ghost"
@@ -305,6 +304,12 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                           </div>
                         </FormControl>
                         <FormMessage />
+                        {/* Password Strength Indicator */}
+                        {passwordValue && (
+                          <div className={`mt-1 text-sm ${strength.color}`}>
+                            Password strength: {strength.label}
+                          </div>
+                        )}
                       </FormItem>
                     )}
                   />
@@ -341,11 +346,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
                     )}
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-blue-600 hover:bg-blue-700 mt-2" 
-                  disabled={registerForm.formState.isSubmitting}
-                >
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 mt-2" disabled={registerForm.formState.isSubmitting}>
                   {registerForm.formState.isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -360,7 +361,7 @@ export function AuthForm({ onSuccess, defaultTab = "login" }: AuthFormProps) {
           </motion.div>
         </TabsContent>
       </Tabs>
-      
+
       <div className="text-center text-sm text-gray-500">
         By continuing, you agree to our Terms of Service and Privacy Policy
       </div>

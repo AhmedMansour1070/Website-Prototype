@@ -1,7 +1,7 @@
+// newsletter-form.tsx
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,8 +17,15 @@ export function NewsletterForm() {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch("https://your-backend-domain.com/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to subscribe. Please try again.")
+      }
 
       toast({
         title: "Success!",
@@ -53,4 +60,3 @@ export function NewsletterForm() {
     </form>
   )
 }
-

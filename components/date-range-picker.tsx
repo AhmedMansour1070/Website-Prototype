@@ -1,3 +1,4 @@
+// date-range-picker.tsx
 "use client"
 
 import * as React from "react"
@@ -19,12 +20,12 @@ interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> 
   showPresets?: boolean
 }
 
-export function DatePickerWithRange({ 
+export function DatePickerWithRange({
   className,
   position = "bottom",
   align = "start",
   variant = "default",
-  showPresets = true
+  showPresets = true,
 }: DatePickerWithRangeProps) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2023, 11, 1), // December 1, 2023
@@ -134,18 +135,12 @@ export function DatePickerWithRange({
             <ChevronDown className="h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent 
-          className={cn(
-            "w-auto p-0",
-            variant === "card" && "rounded-lg border border-blue-200 shadow-lg"
-          )} 
+        <PopoverContent
+          className={cn("w-auto p-0", variant === "card" && "rounded-lg border border-blue-200 shadow-lg")}
           align={align}
           side={position}
         >
-          <div className={cn(
-            "flex flex-col sm:flex-row gap-0 sm:gap-4",
-            showPresets ? "sm:divide-x" : ""
-          )}>
+          <div className={cn("flex flex-col sm:flex-row gap-0 sm:gap-4", showPresets ? "sm:divide-x" : "")}>
             {showPresets && (
               <div className="p-3 sm:p-4 border-b sm:border-b-0 border-gray-200 sm:pr-6">
                 <h3 className="font-medium text-sm mb-3 text-gray-500">Quick Select</h3>
@@ -179,19 +174,10 @@ export function DatePickerWithRange({
               />
               {!showPresets && (
                 <div className="flex items-center justify-between px-4 py-2 border-t border-gray-200">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsOpen(false)}
-                    className="text-gray-500"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="text-gray-500">
                     Cancel
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setIsOpen(false)}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
+                  <Button size="sm" onClick={() => setIsOpen(false)} className="bg-blue-600 hover:bg-blue-700">
                     Apply
                   </Button>
                 </div>

@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Truck, Menu, User, LogOut, LayoutDashboard, Settings, ChevronRight, Phone, Mail, Info, Home } from "lucide-react"
+import { Truck, Menu, User, LogOut, LayoutDashboard, Home, Info, Mail, Settings, FileText, BarChart } from "lucide-react"
 import { AuthModal } from "./auth-modal"
 
 const navItems = [
@@ -22,7 +22,11 @@ const navItems = [
   { label: "ABOUT", href: "/about", icon: <Info className="h-4 w-4" /> },
   { label: "SERVICES", href: "/services", icon: <Truck className="h-4 w-4" /> },
   { label: "CONTACT", href: "/contact", icon: <Mail className="h-4 w-4" /> },
+  { label: "DEMO", href: "/demo-dashboard", icon: <BarChart className="h-4 w-4" /> },
 ]
+
+// Create a custom event for login state changes
+export const LOGIN_STATE_CHANGED = "loginStateChanged"
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -33,32 +37,51 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
+  // Function to check and update login state
+  const checkLoginState = () => {
     const token = localStorage.getItem("token")
     const userData = localStorage.getItem("user")
 
     if (token && userData) {
       setIsLoggedIn(true)
       setUser(JSON.parse(userData))
+    } else {
+      setIsLoggedIn(false)
+      setUser(null)
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
     }
 
     const handleResize = () => {
       setIsMobileView(window.innerWidth < 768)
     }
 
+    // Handle login state changes
+    const handleLoginStateChange = () => {
+      checkLoginState()
+    }
+
     // Initialize
+    checkLoginState()
     handleResize()
 
+    // Add event listeners
     window.addEventListener("scroll", handleScroll)
     window.addEventListener("resize", handleResize)
+    window.addEventListener(LOGIN_STATE_CHANGED, handleLoginStateChange)
+    
+    // Check for login state changes periodically (as a fallback)
+    const loginCheckInterval = setInterval(checkLoginState, 2000)
     
     return () => {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("resize", handleResize)
+      window.removeEventListener(LOGIN_STATE_CHANGED, handleLoginStateChange)
+      clearInterval(loginCheckInterval)
     }
   }, [])
 
@@ -67,6 +90,10 @@ export default function Navbar() {
     localStorage.removeItem("user")
     setIsLoggedIn(false)
     setUser(null)
+    
+    // Dispatch event to notify other components
+    window.dispatchEvent(new Event(LOGIN_STATE_CHANGED))
+    
     router.push("/")
   }
 
@@ -94,7 +121,7 @@ export default function Navbar() {
             }`}>TRUCKING</span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-1 min-w-[400px] justify-center">
+          <nav className="hidden md:flex items-center space-x-1 min-w-[500px] justify-center">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -141,15 +168,27 @@ export default function Navbar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
+                    <Link href="/dashboard/profile" className="flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="flex items-center">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/profile" className="flex items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                    <Link href="/demo-dashboard" className="flex items-center">
+                      <BarChart className="mr-2 h-4 w-4" />
+                      <span>Demo Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/plans" className="flex items-center">
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Plans</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -160,7 +199,10 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <AuthModal useAvatar={true} />
+              <AuthModal 
+                useAvatar={true}
+                defaultTab="login"
+              />
             )}
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -199,8 +241,10 @@ export default function Navbar() {
                               : "text-gray-700 hover:bg-gray-50"
                           }`}
                         >
-                          <span className="font-medium">{item.label}</span>
-                          <ChevronRight className="h-4 w-4" />
+                          <div className="flex items-center space-x-3">
+                            {item.icon}
+                            <span className="font-medium">{item.label}</span>
+                          </div>
                         </Link>
                       ))}
                     </nav>
@@ -233,6 +277,28 @@ export default function Navbar() {
                             Dashboard
                           </Button>
                           <Button 
+                            variant="outline" 
+                            onClick={() => {
+                              router.push('/demo-dashboard');
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full"
+                          >
+                            Demo
+                          </Button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => {
+                              router.push('/dashboard/profile');
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full"
+                          >
+                            Profile
+                          </Button>
+                          <Button 
                             variant="destructive" 
                             onClick={() => {
                               handleLogout();
@@ -245,20 +311,19 @@ export default function Navbar() {
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        <Button 
+                      <div className="space-y-4">
+                        <AuthModal
+                          useAvatar={false}
+                          triggerText="Sign in"
+                          className="w-full mb-2"
+                        />
+                        <AuthModal
+                          useAvatar={false}
+                          triggerText="Create account"
+                          triggerVariant="outline"
+                          defaultTab="register"
                           className="w-full"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Sign in
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Create account
-                        </Button>
+                        />
                       </div>
                     )}
                   </div>
@@ -276,7 +341,7 @@ export default function Navbar() {
     <div
       className={`md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t shadow-lg`}
     >
-      <div className="grid grid-cols-4 h-16">
+      <div className="grid grid-cols-5 h-16">
         {navItems.map((item) => (
           <Link
             key={item.href}
