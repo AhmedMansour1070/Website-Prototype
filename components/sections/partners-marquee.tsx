@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import Image from "next/image"
+import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 const partners = [
   { name: "Health Partner", logo: "/images/partners/health.png" },
   { name: "Hexagon", logo: "/images/partners/hexagon.png" },
   { name: "Construction", logo: "/images/partners/construction.png" },
   { name: "Overseas Transport", logo: "/images/partners/overseas.png" },
-  { name: "Plaininfity", logo: "/images/partners/plaininfity.png" },
+  { name: "Plaininfinity", logo: "/images/partners/plaininfinity.png" }, // Fixed spelling
   { name: "Logistics", logo: "/images/partners/logistics.png" },
-]
+];
 
 export function PartnersMarquee() {
-  const marqueeRef = useRef<HTMLDivElement>(null)
-  const itemsRef = useRef<HTMLDivElement>(null)
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const marquee = marqueeRef.current
-    const items = itemsRef.current
-    if (!marquee || !items) return
+    const marquee = marqueeRef.current;
+    const items = itemsRef.current;
+    if (!marquee || !items) return;
 
-    let animationId: number
-    let currentIndex = 0
-    const totalPartners = partners.length
+    let animationId: ReturnType<typeof setTimeout>; // Fix TypeScript issue
+    let currentIndex = 0;
+    const totalPartners = partners.length;
 
     const animate = () => {
-      currentIndex = (currentIndex + 1) % totalPartners
+      currentIndex = (currentIndex + 1) % totalPartners;
 
       // Create the new order of partners
-      const reorderedPartners = [...partners.slice(currentIndex), ...partners.slice(0, currentIndex)]
+      const reorderedPartners = [...partners.slice(currentIndex), ...partners.slice(0, currentIndex)];
 
       // Update the DOM
       if (items) {
-        items.style.transform = `translateX(0)`
+        items.style.transform = `translateX(0)`;
         items.innerHTML = reorderedPartners
           .map(
-            (partner, index) => `
+            (partner) => `
           <div class="flex-shrink-0 w-32 h-16 relative grayscale hover:grayscale-0 transition-all duration-300">
             <img
               src="${partner.logo || "/placeholder.svg?height=64&width=128"}"
@@ -44,20 +44,20 @@ export function PartnersMarquee() {
               class="object-contain w-full h-full"
             />
           </div>
-        `,
+        `
           )
-          .join("")
+          .join("");
       }
 
-      animationId = setTimeout(animate, 2000) // Change partner every 2 seconds
-    }
+      animationId = setTimeout(animate, 2000); // Change partner every 2 seconds
+    };
 
-    animate()
+    animate();
 
     return () => {
-      clearTimeout(animationId)
-    }
-  }, [])
+      clearTimeout(animationId);
+    };
+  }, []);
 
   return (
     <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50 overflow-hidden">
@@ -83,6 +83,5 @@ export function PartnersMarquee() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

@@ -57,10 +57,13 @@ export default function DemoDashboardLayout({
             </div>
 
             <div className="flex items-center space-x-4">
+            <a href="/demo-dashboard/plugins" className="text-white">
               <Button variant="ghost" size="sm" className="text-white">
+                {/* You can replace this with an actual icon */}
                 <Settings className="mr-2 h-4 w-4" />
                 Plugins
               </Button>
+            </a>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">

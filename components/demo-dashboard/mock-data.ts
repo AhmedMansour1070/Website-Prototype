@@ -1,4 +1,6 @@
-// Mock data for the dashboard demo
+// components/demo-dashboard/mock-data.ts
+
+// Dashboard summary data
 export const dashboardData = {
   totalExpenses: 27200,
   totalSalaries: 12100,
@@ -20,8 +22,9 @@ export const dashboardData = {
   fuelEfficiency: 8.2,
   vehicleUtilization: 76,
   incidentRate: 2.3,
-}
+};
 
+// Chart data for graphs
 export const chartData = {
   monthlyExpenses: [
     { name: "Jan", value: 2300 },
@@ -95,10 +98,21 @@ export const chartData = {
     { name: "Construction", value: 35 },
     { name: "Hazardous", value: 15 },
   ],
-}
+};
 
 // Mock data for vehicles
-export const mockVehicles = [
+export interface Vehicle {
+  id: number;
+  licensePlate: string;
+  brand: string;
+  model: string;
+  status: string;
+  lastMileage: number;
+  image: string;
+  rentals: string[];
+}
+
+export const mockVehicles: Vehicle[] = [
   {
     id: 1,
     licensePlate: "HR BF-150",
@@ -149,10 +163,20 @@ export const mockVehicles = [
     image: "/placeholder.svg?height=80&width=120",
     rentals: [],
   },
-]
+];
 
 // Mock data for drivers
-export const mockDrivers = [
+export interface Driver {
+  id: number;
+  name: string;
+  licenseNum: string;
+  licenseExpDate: string;
+  status: "active" | "inactive";
+  experience: string;
+  assignedVehicle: string;
+}
+
+export const mockDrivers: Driver[] = [
   {
     id: 1,
     name: "John Doe",
@@ -198,10 +222,28 @@ export const mockDrivers = [
     experience: "15 years",
     assignedVehicle: "Unassigned",
   },
-]
+];
 
 // Mock data for trips
-export const mockTrips = [
+export interface Trip {
+  id: number;
+  distance: number;
+  loadType: string;
+  loadCapacity: number;
+  driverId: number;
+  driverName: string;
+  truckId: number;
+  truckCode: string;
+  startTime: string;
+  endTime: string | null;
+  status: string;
+  startLocation: string;
+  endLocation: string;
+  fuelConsumption: number | null;
+  avgSpeed: number;
+}
+
+export const mockTrips: Trip[] = [
   {
     id: 1,
     distance: 450.5,
@@ -338,10 +380,24 @@ export const mockTrips = [
     fuelConsumption: 61.8,
     avgSpeed: 63.9,
   },
-]
+];
 
 // Mock data for maintenance
-export const mockMaintenance = [
+export interface MaintenanceItem {
+  id: number | string;
+  truckId: number;
+  truckCode: string;
+  truckModel: string;
+  lastMaintenanceDate: string;
+  nextMaintenanceDate: string;
+  type: string;
+  cost: number;
+  status: string;
+  notes: string;
+  garage: string;
+}
+
+export const mockMaintenance: MaintenanceItem[] = [
   {
     id: 1,
     truckId: 1,
@@ -446,5 +502,4 @@ export const mockMaintenance = [
     notes: "Oil change, filter replacement, fluid checks",
     garage: "Main Depot",
   },
-]
-
+];

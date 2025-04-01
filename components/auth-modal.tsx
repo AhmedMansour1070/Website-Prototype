@@ -1,21 +1,20 @@
-// auth-modal.tsx
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Button, type ButtonProps } from "@/components/ui/button"
-import { AuthForm } from "@/components/auth-form"
-import { useRouter } from "next/navigation"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { User, LogIn } from "lucide-react"
-import { motion } from "framer-motion"
+import { useState } from "react";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button, type ButtonProps } from "@/components/ui/button";
+import { AuthForm } from "@/components/auth-form";
+import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { User, LogIn } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface AuthModalProps {
-  triggerVariant?: ButtonProps["variant"]
-  triggerText?: string
-  defaultTab?: "login" | "register"
-  className?: string
-  useAvatar?: boolean
+  triggerVariant?: ButtonProps["variant"];
+  triggerText?: string;
+  defaultTab?: "login" | "register";
+  className?: string;
+  useAvatar?: boolean;
 }
 
 export function AuthModal({
@@ -25,8 +24,8 @@ export function AuthModal({
   className,
   useAvatar = false,
 }: AuthModalProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -59,8 +58,9 @@ export function AuthModal({
           <AuthForm
             defaultTab={defaultTab}
             onSuccess={(userData) => {
-              setIsOpen(false)
-              //router.push("/dashboard")
+              setIsOpen(false);
+              // Redirect or update state as needed:
+              // router.push("/dashboard")
             }}
           />
         </div>
@@ -72,5 +72,5 @@ export function AuthModal({
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
