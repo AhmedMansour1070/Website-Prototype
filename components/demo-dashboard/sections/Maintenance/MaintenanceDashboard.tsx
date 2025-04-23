@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { DemoBadge } from "@/components/demo-dashboard/sections/Dashboard/demo-badge";
+import { DemoBadge } from "@/components/demo-dashboard/demo-badge";  // Fixed import path
 
 // Import subcomponents
 import { HeaderSection } from "./HeaderSection";
