@@ -1,4 +1,4 @@
-"use client";
+
 
 import { VehiclesDashboard } from "@/components/demo-dashboard/sections/vehicles";
 

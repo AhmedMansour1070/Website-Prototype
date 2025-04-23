@@ -1,4 +1,4 @@
-"use client";
+
 
 import SettingsPage from "@/components/demo-dashboard/sections/settings/SettingsPage";
 

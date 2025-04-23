@@ -1,4 +1,3 @@
-"use client";
 
 import MaintenanceDashboard from "@/components/demo-dashboard/sections/Maintenance/MaintenanceDashboard";
 

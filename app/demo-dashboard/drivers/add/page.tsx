@@ -1,4 +1,4 @@
-"use client";
+
 
 import { useRouter } from "next/navigation";
 import { AddDriverForm } from "@/components/demo-dashboard/sections/drivers/add-driver-form"; // this calls the index.tsx

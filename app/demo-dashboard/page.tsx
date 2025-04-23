@@ -1,4 +1,4 @@
-"use client";
+
 
 import { DashboardPage } from "@/components/demo-dashboard/sections/Dashboard";
 
