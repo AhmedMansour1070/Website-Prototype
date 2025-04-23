@@ -1,4 +1,4 @@
-
+"use client";
 
 import PluginsPage from "@/components/demo-dashboard/sections/Plugins/PluginsPage"
 
