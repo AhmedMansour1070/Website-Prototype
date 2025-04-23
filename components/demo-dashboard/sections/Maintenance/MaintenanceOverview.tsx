@@ -19,6 +19,7 @@ interface MaintenanceOverviewProps {
   maintenance: any[];
   formatDate: (dateString: string) => string;
   getDaysUntil: (dateString: string) => number;
+  formatCurrency?: (amount: number) => string; // Add this prop to the interface
 }
 
 function UpcomingMaintenance({ maintenance, formatDate, getDaysUntil }: MaintenanceOverviewProps) {
@@ -91,7 +92,8 @@ function UpcomingMaintenance({ maintenance, formatDate, getDaysUntil }: Maintena
   );
 }
 
-function MaintenanceTypes({ maintenance }: { maintenance: any[]; formatCurrency: (amount: number) => string; }) {
+// Fixed the interface for MaintenanceTypes component
+function MaintenanceTypes({ maintenance, formatCurrency }: { maintenance: any[]; formatCurrency?: (amount: number) => string; }) {
   const types: Record<string, number> = {};
   maintenance.forEach(item => {
     types[item.type] = (types[item.type] || 0) + 1;
@@ -199,12 +201,12 @@ function MaintenanceSummary({ maintenance }: { maintenance: any[] }) {
   );
 }
 
-// Single export for the MaintenanceOverview function
-export function MaintenanceOverview({ maintenance, formatDate, getDaysUntil }: MaintenanceOverviewProps) {
+// Update the MaintenanceOverview function to pass the formatCurrency prop
+export function MaintenanceOverview({ maintenance, formatDate, getDaysUntil, formatCurrency }: MaintenanceOverviewProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      <UpcomingMaintenance maintenance={maintenance} formatDate={formatDate} getDaysUntil={getDaysUntil} />
-      <MaintenanceTypes maintenance={maintenance} formatCurrency={undefined as any} />
+      <UpcomingMaintenance maintenance={maintenance} formatDate={formatDate} getDaysUntil={getDaysUntil} formatCurrency={formatCurrency} />
+      <MaintenanceTypes maintenance={maintenance} formatCurrency={formatCurrency} />
       <MaintenanceSummary maintenance={maintenance} />
     </div>
   );

@@ -106,6 +106,7 @@ export function MaintenanceDashboard() {
         maintenance={maintenance}
         formatDate={formatDate}
         getDaysUntil={getDaysUntil}
+        formatCurrency={formatCurrency} // Pass the formatCurrency function here
       />
       <MaintenanceRecordsTable
         searchTerm={searchTerm}
