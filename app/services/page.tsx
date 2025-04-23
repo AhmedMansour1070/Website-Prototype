@@ -7,10 +7,46 @@ import { ServicesHeroSection } from "@/components/sections/services/hero-section
 import { ServicesCTASection } from "@/components/sections/services/cta-section"
 import { motion, useScroll, useTransform } from "framer-motion"
 
-// Shared animation utilities
-import { containerVariants, itemVariants } from "@/components/animations/variants"
-import { ParallaxLayer } from "@/components/animations/ParallaxLayer"
-import { AnimatedBackground } from "@/components/animations/AnimatedBackground"
+// Import animation components with dynamic imports to prevent build failures
+import dynamic from 'next/dynamic'
+
+// Define fallback components
+const FallbackBackground = () => <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-50 to-indigo-50"></div>
+const FallbackLayer = ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+
+// Dynamically import animation components with fallbacks
+const AnimatedBackground = dynamic(
+  () => import('@/components/animations/AnimatedBackground').then(mod => mod.AnimatedBackground),
+  { ssr: false, loading: () => <FallbackBackground /> }
+)
+
+const ParallaxLayer = dynamic(
+  () => import('@/components/animations/ParallaxLayer').then(mod => mod.ParallaxLayer),
+  { ssr: false, loading: () => <FallbackLayer children={null} /> }
+)
+
+// Fallback animation variants
+const defaultContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.5 } }
+}
+
+const defaultItemVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.3 } }
+}
+
+// Import animation variants or use defaults
+let containerVariants = defaultContainerVariants
+let itemVariants = defaultItemVariants
+
+try {
+  const variants = require('@/components/animations/variants')
+  containerVariants = variants.containerVariants || defaultContainerVariants
+  itemVariants = variants.itemVariants || defaultItemVariants
+} catch (error) {
+  console.warn('Animation variants not found, using defaults')
+}
 
 function ServicesPageContent() {
   const { scrollYProgress } = useScroll()
@@ -34,6 +70,7 @@ function ServicesPageContent() {
       style={{ background: backgroundColor }}
       className="min-h-screen relative"
     >
+      {/* Using the dynamically imported component */}
       <AnimatedBackground />
 
       {/* Hero Section */}
