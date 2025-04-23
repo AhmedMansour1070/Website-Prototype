@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import VerificationForm from "@/components/auth/VerificationForm";
 import SuccessState from "@/components/auth/VerificationSuccess";
@@ -17,7 +17,8 @@ interface VerificationData {
   code: string;
 }
 
-export default function VerifyEmail() {
+// Component that safely uses useSearchParams
+function VerifyEmailContent() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -97,28 +98,46 @@ export default function VerifyEmail() {
   }
 
   return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }} 
+      transition={{ duration: 0.4 }}
+      className="w-full"
+    >
+      {success ? (
+        <SuccessState />
+      ) : (
+        <VerificationForm 
+          initialEmail={initialEmail}
+          loading={loading}
+          resendLoading={resendLoading}
+          countdown={countdown}
+          onSubmit={handleVerify}
+          onResendCode={handleResendCode}
+          setCountdown={setCountdown}
+        />
+      )}
+    </motion.div>
+  );
+}
+
+// Loading fallback component
+function LoadingState() {
+  return (
+    <div className="flex justify-center items-center p-8">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+    </div>
+  );
+}
+
+// Main component with Suspense
+export default function VerifyEmail() {
+  return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.4 }}
-          className="w-full"
-        >
-          {success ? (
-            <SuccessState />
-          ) : (
-            <VerificationForm 
-              initialEmail={initialEmail}
-              loading={loading}
-              resendLoading={resendLoading}
-              countdown={countdown}
-              onSubmit={handleVerify}
-              onResendCode={handleResendCode}
-              setCountdown={setCountdown}
-            />
-          )}
-        </motion.div>
+        <Suspense fallback={<LoadingState />}>
+          <VerifyEmailContent />
+        </Suspense>
       </div>
     </div>
   );
