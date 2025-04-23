@@ -174,7 +174,7 @@ export function ServiceCard({
         const isMobileView = window.innerWidth < 640;
         setIsMobile(isMobileView);
         const isLowPerf = 
-          ("deviceMemory" in navigator && (navigator as any).deviceMemory < 4) ||
+          // Use a safer check that won't cause build errors
           (isMobileView && (navigator.userAgent.includes("Android") || /iPhone OS [78]_/.test(navigator.userAgent)));
         setIsLowPerfDevice(isLowPerf);
       }, 100);

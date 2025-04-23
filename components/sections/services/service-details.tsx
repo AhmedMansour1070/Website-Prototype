@@ -1,17 +1,33 @@
-// components/ServiceDetails.tsx
+// components/sections/services/service-details.tsx
 "use client";
 
 import React, { useState, useRef } from "react";
 import { motion, useScroll, useInView } from "framer-motion";
-import { ServiceCard, Service } from "./ServiceCard";
+import { ServiceCard } from "./ServiceCard";
 import { ServiceCTA } from "./ServiceCTA";
+import { Truck, Users, PenToolIcon, Map, Fuel } from "lucide-react";
+
+// Define the Service interface here to avoid circular dependencies
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  image: string;
+  features: string[];
+  color: string;
+  iconColor: string;
+  gradient: string;
+  featureColor: string;
+  highlightColor: string;
+}
 
 const servicesData: Service[] = [
   {
     id: "fleet-management",
     title: "Fleet Management",
     description: "Comprehensive vehicle tracking and management system",
-    icon: require("lucide-react").Truck,
+    icon: Truck,
     image: "/images/fleet-m1.jpg",
     features: [
       "Real-time vehicle tracking and location monitoring",
@@ -31,7 +47,7 @@ const servicesData: Service[] = [
     id: "driver-management",
     title: "Driver Management",
     description: "Complete driver monitoring and compliance solution",
-    icon: require("lucide-react").Users,
+    icon: Users,
     image: "/images/driver-management.jpg",
     features: [
       "Driver performance monitoring and scoring",
@@ -51,7 +67,7 @@ const servicesData: Service[] = [
     id: "maintenance-tracking",
     title: "Maintenance Tracking",
     description: "Proactive maintenance management to prevent costly breakdowns",
-    icon: require("lucide-react").PenToolIcon,
+    icon: PenToolIcon,
     image: "/images/maintenance-tracking.jpg",
     features: [
       "Scheduled maintenance reminders and alerts",
@@ -71,7 +87,7 @@ const servicesData: Service[] = [
     id: "trip-analytics",
     title: "Trip Analytics",
     description: "Detailed trip data analysis for route optimization",
-    icon: require("lucide-react").Map,
+    icon: Map,
     image: "/images/trip-analytics.jpg",
     features: [
       "Route planning and optimization",
@@ -91,7 +107,7 @@ const servicesData: Service[] = [
     id: "fuel-management",
     title: "Fuel Management",
     description: "Comprehensive fuel usage tracking and optimization",
-    icon: require("lucide-react").Fuel,
+    icon: Fuel,
     image: "/images/fuel-management.jpg",
     features: [
       "Fuel consumption tracking and reporting",
