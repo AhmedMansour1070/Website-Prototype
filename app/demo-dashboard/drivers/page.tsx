@@ -1,18 +1,7 @@
-import dynamic from "next/dynamic";
 
-// Use dynamic imports with SSR disabled for components using client-side features
-const DriversHeader = dynamic(
-  () => import("@/components/demo-dashboard/sections/drivers/DriversHeader"),
-  { ssr: false }
-);
-const DriversStats = dynamic(
-  () => import("@/components/demo-dashboard/sections/drivers/DriversStats"),
-  { ssr: false }
-);
-const DriversTable = dynamic(
-  () => import("@/components/demo-dashboard/sections/drivers/DriversTable"),
-  { ssr: false }
-);
+import DriversHeader from "@/components/demo-dashboard/sections/drivers/DriversHeader";
+import DriversStats from "@/components/demo-dashboard/sections/drivers/DriversStats";
+import DriversTable from "@/components/demo-dashboard/sections/drivers/DriversTable";
 
 export default function DriversPage() {
   return (
