@@ -1,3 +1,4 @@
+"use client";
 
 import DriversHeader from "@/components/demo-dashboard/sections/drivers/DriversHeader";
 import DriversStats from "@/components/demo-dashboard/sections/drivers/DriversStats";
