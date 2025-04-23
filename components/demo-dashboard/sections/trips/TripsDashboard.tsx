@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { DemoBadge } from "@/components/demo-dashboard/demo-badge";
-import { mockTrips, Trip } from "@/components/demo-dashboard/mock-data";
+import { mockTrips } from "@/components/demo-dashboard/mock-data";
+import { Trip } from "./TripsRecordsTable"; // Import Trip from TripsRecordsTable
 
 // Import section components
 import { HeaderSection } from "./HeaderSection";
@@ -21,7 +22,20 @@ const formatDate = (dateString: string | null): string => {
 export function TripsDashboard() {
   const router = useRouter();
   const { toast } = useToast();
-  const [trips, setTrips] = useState<Trip[]>(mockTrips);
+  
+  // Convert mockTrips to match the Trip interface from TripsRecordsTable
+  const convertedTrips: Trip[] = mockTrips.map(trip => ({
+    id: String(trip.id), // Convert number to string
+    startLocation: trip.startLocation,
+    endLocation: trip.endLocation,
+    driverName: trip.driverName,
+    truckCode: trip.truckCode,
+    loadType: trip.loadType,
+    startTime: trip.startTime,
+    status: trip.status as "completed" | "in_progress" | "scheduled" | "cancelled"
+  }));
+  
+  const [trips, setTrips] = useState<Trip[]>(convertedTrips);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "timeline" | "gallery">("table");
   const [isLoading, setIsLoading] = useState(true);
@@ -43,8 +57,11 @@ export function TripsDashboard() {
   const totalTrips = trips.length;
   const completedTrips = trips.filter((t) => t.status === "completed").length;
   const inProgressTrips = trips.filter((t) => t.status === "in_progress").length;
-  const totalDistance = trips.reduce((sum, trip) => sum + trip.distance, 0);
-  const tripsWithFuel = trips.filter((t) => t.fuelConsumption != null);
+  
+  // These properties don't exist in the TripsRecordsTable Trip interface
+  // Using a type assertion to access them from the original mockTrips
+  const totalDistance = mockTrips.reduce((sum, trip) => sum + (trip.distance || 0), 0);
+  const tripsWithFuel = mockTrips.filter((t) => t.fuelConsumption != null);
 
   if (isLoading) {
     return (
