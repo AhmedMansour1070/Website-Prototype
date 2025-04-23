@@ -1,4 +1,4 @@
-
+"use client"
 
 import { useRouter } from "next/navigation";
 import { AddVehicleForm } from "@/components/demo-dashboard/sections/vehicles/add-vehicle-form";
