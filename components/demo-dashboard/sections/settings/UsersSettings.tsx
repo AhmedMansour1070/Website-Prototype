@@ -67,7 +67,7 @@ export function UsersSettings({ handleSave, isLoading }: UsersSettingsProps) {
                 </select>
               </div>
               <div>
-                <Switch defaultChecked={user.status === "Active"} aria-label="User status" />
+                <Switch id={`user-status-${index}`} defaultChecked={user.status === "Active"} aria-label="User status" />
               </div>
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" size="sm">
