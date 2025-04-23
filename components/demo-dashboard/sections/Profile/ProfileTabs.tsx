@@ -1,4 +1,3 @@
-// ProfileTabs.tsx - Make sure this is in the proper directory
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
